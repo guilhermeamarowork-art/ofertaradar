@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="OfertaRadar reúne ideias de produtos, ofertas e recomendações com foco em compras inteligentes no Brasil."
+      content="OfertaRadar reúne ofertas, categorias e recomendações de produtos em um só lugar."
     />
-    <title>OfertaRadar | As melhores ofertas, no seu radar.</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="script.js"></script>
+    <title>OfertaRadar | As melhores ofertas em um só lugar</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./script.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -20,15 +20,15 @@
             <svg viewBox="0 0 64 64" role="img" aria-label="Logo OfertaRadar">
               <defs>
                 <linearGradient id="brand-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#ffd84d"/>
-                  <stop offset="100%" stop-color="#ffb703"/>
+                  <stop offset="0%" stop-color="#ffd84d" />
+                  <stop offset="100%" stop-color="#ffb703" />
                 </linearGradient>
               </defs>
-              <circle cx="32" cy="32" r="28" fill="#0f172a"/>
-              <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5"/>
-              <circle cx="32" cy="32" r="8" fill="url(#brand-gradient)"/>
-              <path d="M20 42 L32 15 L44 42" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16 48 H48" stroke="#ffd84d" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="32" cy="32" r="28" fill="#0d2342" />
+              <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5" />
+              <circle cx="32" cy="32" r="8" fill="url(#brand-gradient)" />
+              <path d="M20 42 L32 15 L44 42" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M16 48 H48" stroke="#ffd84d" stroke-width="4" stroke-linecap="round" />
             </svg>
           </span>
           <span class="brand-copy">
@@ -57,20 +57,20 @@
       <section class="hero">
         <div class="container hero-grid">
           <div class="hero-copy">
-            <span class="eyebrow">Economize com inteligência</span>
-            <h1>Economize nas suas próximas compras.</h1>
+            <span class="eyebrow">Comparador de ofertas</span>
+            <h1>As melhores ofertas em um só lugar</h1>
             <p>
-              Descubra produtos relevantes, compare categorias e encontre oportunidades
-              para comprar melhor com segurança e praticidade.
+              Descubra produtos em destaque, compare preços e encontre oportunidades
+              melhores para comprar com inteligência, rapidez e confiança.
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#ofertas">Explorar ofertas</a>
+              <a class="btn btn-primary" href="#ofertas">Ver ofertas</a>
               <a class="btn btn-secondary" href="#categorias">Ver categorias</a>
             </div>
             <ul class="hero-meta" aria-label="Benefícios do OfertaRadar">
-              <li>Produtos selecionados</li>
-              <li>Busca por categoria</li>
-              <li>Layout responsivo</li>
+              <li>Busca inteligente</li>
+              <li>Filtros por categoria</li>
+              <li>Preços em destaque</li>
             </ul>
           </div>
 
@@ -83,31 +83,31 @@
             <div class="mini-card highlight">
               <span class="mini-label">Melhor valor</span>
               <strong>até 40% OFF</strong>
-              <small>em categorias escolhidas</small>
+              <small>em categorias selecionadas</small>
             </div>
             <div class="mini-card small-panel">
               <span class="mini-label">Categorias</span>
               <div class="tags">
-                <span>Games</span>
-                <span>Casa</span>
                 <span>Tech</span>
+                <span>Casa</span>
+                <span>Games</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="destaques" class="section">
+      <section id="destaques" class="section section-light">
         <div class="container">
           <div class="section-heading">
             <div>
-              <span class="eyebrow">Ofertas em destaque</span>
+              <span class="eyebrow eyebrow-light">Ofertas em destaque</span>
               <h2>Produtos selecionados para você descobrir</h2>
             </div>
             <a class="link-as-button" href="#ofertas">Ver todos</a>
           </div>
 
-          <div id="featuredProducts" class="product-grid"></div>
+          <div id="featuredProducts" class="product-grid" aria-live="polite"></div>
         </div>
       </section>
 
@@ -115,7 +115,7 @@
         <div class="container">
           <div class="section-heading center">
             <div>
-              <span class="eyebrow">Categorias</span>
+              <span class="eyebrow eyebrow-light">Categorias</span>
               <h2>Explore por interesse</h2>
             </div>
           </div>
@@ -124,16 +124,37 @@
         </div>
       </section>
 
-      <section id="ofertas" class="section">
+      <section id="ofertas" class="section section-light">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading catalog-heading">
             <div>
-              <span class="eyebrow">Catálogo</span>
+              <span class="eyebrow eyebrow-light">Catálogo</span>
               <h2>Produtos mais procurados</h2>
             </div>
             <div class="results-meta">
               <span id="resultCount">0 produtos</span>
             </div>
+          </div>
+
+          <div class="catalog-toolbar" aria-label="Filtros do catálogo">
+            <div class="field-group">
+              <label for="minPrice">Preço mínimo</label>
+              <input id="minPrice" type="number" min="0" step="10" placeholder="0" />
+            </div>
+            <div class="field-group">
+              <label for="maxPrice">Preço máximo</label>
+              <input id="maxPrice" type="number" min="0" step="10" placeholder="9999" />
+            </div>
+            <div class="field-group">
+              <label for="sortSelect">Ordenar por</label>
+              <select id="sortSelect">
+                <option value="featured">Destaques</option>
+                <option value="price-asc">Menor preço</option>
+                <option value="price-desc">Maior preço</option>
+                <option value="discount">Maior desconto</option>
+              </select>
+            </div>
+            <button id="clearFilters" class="btn btn-secondary small-btn" type="button">Limpar filtros</button>
           </div>
 
           <div id="productGrid" class="product-grid big-grid" aria-live="polite"></div>
@@ -144,7 +165,7 @@
         <div class="container">
           <div class="section-heading center">
             <div>
-              <span class="eyebrow">Como funciona</span>
+              <span class="eyebrow eyebrow-light">Como funciona</span>
               <h2>Um site pensado para facilitar a compra</h2>
             </div>
           </div>
@@ -163,7 +184,7 @@
             <article class="benefit-card">
               <div class="benefit-icon">03</div>
               <h3>Estratégia de afiliado</h3>
-              <p>Prepare os links de afiliado e transforme descobertas em oportunidades.</p>
+              <p>Prepare links de afiliado e transforme descobertas em oportunidades.</p>
             </article>
           </div>
         </div>
@@ -174,9 +195,9 @@
           <div class="disclaimer-box">
             <h3>Aviso importante</h3>
             <p>
-              Os produtos exibidos nesta página são exemplos demonstrativos. Para publicar
-              com links reais do Mercado Livre, substitua os dados dos produtos por links de
-              afiliado autorizados e mantenha o conteúdo sempre atualizado.
+              Os produtos exibidos nesta página são exemplos de demonstração. Os links
+              reais de afiliado devem ser configurados conforme a sua conta e a política
+              da plataforma em que você anunciar.
             </p>
           </div>
         </div>
@@ -186,12 +207,12 @@
     <footer class="site-footer">
       <div class="container footer-grid">
         <div>
-          <a href="#top" class="brand footer-brand">
+          <a href="#top" class="brand footer-brand" aria-label="OfertaRadar home">
             <span class="brand-mark small" aria-hidden="true">
               <svg viewBox="0 0 64 64" role="img" aria-label="Logo OfertaRadar mini">
-                <circle cx="32" cy="32" r="28" fill="#0f172a"/>
-                <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5"/>
-                <circle cx="32" cy="32" r="8" fill="#ffd84d"/>
+                <circle cx="32" cy="32" r="28" fill="#0d2342" />
+                <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5" />
+                <circle cx="32" cy="32" r="8" fill="#ffd84d" />
               </svg>
             </span>
             <span class="brand-copy">
@@ -224,6 +245,7 @@
           <ul>
             <li><a href="mailto:contato@ofertaradar.com">contato@ofertaradar.com</a></li>
             <li><span>Brasil</span></li>
+            <li><span>Links de afiliados podem gerar comissão.</span></li>
           </ul>
         </div>
       </div>
@@ -234,5 +256,13 @@
         </div>
       </div>
     </footer>
+
+    <div id="productModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button type="button" class="modal-close" aria-label="Fechar modal">×</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
   </body>
 </html>
