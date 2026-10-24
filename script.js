@@ -12,6 +12,8 @@ const resultCount = document.querySelector('#resultCount');
 const productModal = document.querySelector('#productModal');
 const modalContent = document.querySelector('#modalContent');
 const modalCloseBtn = document.querySelector('.modal-close');
+const productDetailRoot = document.querySelector('#productDetail');
+const productNotFound = document.querySelector('#productNotFound');
 
 const categoryIcons = {
   'Informática e computadores': '🖥️',
@@ -33,14 +35,21 @@ const state = {
 };
 
 function formatPrice(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return 'Preço sob consulta';
+  }
+
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
-  }).format(value);
+  }).format(Number(value));
 }
 
 function getProductDiscount(product) {
-  if (!product.oldPrice || product.oldPrice <= product.price) return 0;
+  if (!product || !product.oldPrice || product.oldPrice <= (product.price ?? 0)) {
+    return 0;
+  }
+
   return Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
 }
 
@@ -49,7 +58,40 @@ function normalizeText(value) {
 }
 
 function hasAffiliateLink(product) {
-  return Boolean(product.affiliateUrl && product.affiliateUrl.trim());
+  return Boolean(product && product.affiliateUrl && product.affiliateUrl.trim());
+}
+
+function getProductById(id) {
+  return products.find((product) => product.id === id) || null;
+}
+
+function buildSpecs(product) {
+  if (Array.isArray(product?.specs) && product.specs.length > 0) {
+    return product.specs;
+  }
+
+  return [
+    { label: 'Marca', value: product?.brand || 'Marca não informada' },
+    { label: 'Categoria', value: product?.category || 'Categoria não informada' },
+    { label: 'Especificações técnicas', value: 'Sem especificações técnicas verificadas informadas no momento.' }
+  ];
+}
+
+function getRelatedProducts(product) {
+  if (!product) return [];
+
+  const relatedIds = Array.isArray(product.relatedIds) ? product.relatedIds : [];
+
+  if (relatedIds.length > 0) {
+    return relatedIds
+      .map((id) => getProductById(id))
+      .filter(Boolean)
+      .slice(0, 3);
+  }
+
+  return products
+    .filter((item) => item.id !== product.id && item.category === product.category)
+    .slice(0, 3);
 }
 
 function createProductCard(product) {
@@ -59,7 +101,7 @@ function createProductCard(product) {
   const discount = getProductDiscount(product);
   const tagText = product.featured ? 'Em destaque' : 'Popular';
   const affiliateButtonClass = hasAffiliateLink(product) ? 'card-link' : 'card-link disabled';
-  const affiliateLabel = hasAffiliateLink(product) ? 'Ver oferta' : 'Demonstração';
+  const affiliateLabel = hasAffiliateLink(product) ? 'Ver oferta' : 'Indisponível';
 
   card.innerHTML = `
     <div class="product-media">
@@ -82,10 +124,13 @@ function createProductCard(product) {
           href="${hasAffiliateLink(product) ? product.affiliateUrl : '#'}"
           target="${hasAffiliateLink(product) ? '_blank' : '_self'}"
           rel="noopener noreferrer"
-          aria-label="${hasAffiliateLink(product) ? 'Ver oferta do produto' : 'Produto demonstrativo'}"
+          aria-label="${hasAffiliateLink(product) ? 'Ver oferta do produto' : 'Produto sem link de oferta disponível'}"
         >
           ${affiliateLabel}
         </a>
+      </div>
+      <div class="card-cta-row">
+        <a href="./product.html?id=${encodeURIComponent(product.id)}" class="text-link">Abrir página completa</a>
       </div>
     </div>
   `;
@@ -95,8 +140,10 @@ function createProductCard(product) {
 
 function renderFeaturedProducts(items) {
   if (!featuredProductsEl) return;
+
   const featured = items.filter((product) => product.featured).slice(0, 4);
   featuredProductsEl.innerHTML = '';
+
   featured.forEach((product) => {
     featuredProductsEl.appendChild(createProductCard(product));
   });
@@ -104,6 +151,7 @@ function renderFeaturedProducts(items) {
 
 function renderCategories(items) {
   if (!categoryListEl) return;
+
   const categories = [...new Set(items.map((product) => product.category))];
 
   const allButton = document.createElement('button');
@@ -182,6 +230,7 @@ function getFilteredProducts() {
 
 function renderProductList(items) {
   if (!productGridEl) return;
+
   productGridEl.innerHTML = '';
 
   if (!items.length) {
@@ -191,6 +240,7 @@ function renderProductList(items) {
         Tente ajustar a busca, a categoria ou os filtros de preço.
       </div>
     `;
+
     if (resultCount) resultCount.textContent = '0 produtos';
     return;
   }
@@ -231,22 +281,17 @@ function openModal(product) {
 
         <div class="modal-meta">
           <span>${product.featured ? 'Destaque' : 'Popular'}</span>
-          <span>${hasLink ? 'Link de afiliado disponível' : 'Demonstração'}</span>
+          <span>${product.brand || 'Marca não informada'}</span>
           <span>Categoria: ${product.category}</span>
         </div>
 
         <div class="modal-actions">
+          <a href="./product.html?id=${encodeURIComponent(product.id)}" class="detail-link">Página completa</a>
           <a href="${hasLink ? product.affiliateUrl : '#'}" class="${hasLink ? '' : 'disabled'}" target="${hasLink ? '_blank' : '_self'}" rel="noopener noreferrer">${hasLink ? 'Ver oferta' : 'Indisponível'}</a>
-          <button type="button" class="modal-close-button">Fechar</button>
         </div>
       </div>
     </div>
   `;
-
-  const modalCloseButton = modalContent.querySelector('.modal-close-button');
-  if (modalCloseButton) {
-    modalCloseButton.addEventListener('click', closeModal);
-  }
 
   productModal.classList.remove('hidden');
   productModal.setAttribute('aria-hidden', 'false');
@@ -254,8 +299,139 @@ function openModal(product) {
 
 function closeModal() {
   if (!productModal) return;
+
   productModal.classList.add('hidden');
   productModal.setAttribute('aria-hidden', 'true');
+}
+
+function renderProductDetailPage() {
+  if (!productDetailRoot) return;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id');
+  const product = getProductById(productId);
+
+  if (!product) {
+    productDetailRoot.innerHTML = `
+      <div class="product-not-found">
+        <div class="not-found-card">
+          <p class="eyebrow eyebrow-light">Produto não encontrado</p>
+          <h1>Não encontramos este item</h1>
+          <p>O produto solicitado não está disponível no catálogo ou foi removido.</p>
+          <div class="detail-actions">
+            <a href="./index.html" class="btn btn-primary">Voltar ao catálogo</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (productNotFound) productNotFound.hidden = false;
+    return;
+  }
+
+  const discount = getProductDiscount(product);
+  const relatedProducts = getRelatedProducts(product);
+  const specs = buildSpecs(product);
+
+  productDetailRoot.innerHTML = `
+    <article class="product-detail-page">
+      <div class="detail-top">
+        <div class="detail-visual">
+          <img src="${product.image}" alt="${product.name}" />
+        </div>
+
+        <div class="detail-info">
+          <span class="detail-badge">${product.category}</span>
+          <h1>${product.name}</h1>
+          <p class="detail-brand">Marca: ${product.brand || 'Marca não informada'}</p>
+          <p class="detail-description">${product.description}</p>
+
+          <div class="detail-price-box">
+            <div class="detail-price-line">
+              <span class="detail-price">${formatPrice(product.price)}</span>
+              ${product.oldPrice ? `<span class="detail-old-price">${formatPrice(product.oldPrice)}</span>` : ''}
+              ${discount ? `<span class="detail-discount">-${discount}%</span>` : ''}
+            </div>
+            <small>Preço e disponibilidade podem sofrer alterações sem aviso prévio.</small>
+          </div>
+
+          <div class="detail-actions">
+            <a
+              class="btn btn-primary ${hasAffiliateLink(product) ? '' : 'disabled'}"
+              href="${hasAffiliateLink(product) ? product.affiliateUrl : '#'}"
+              target="${hasAffiliateLink(product) ? '_blank' : '_self'}"
+              rel="noopener noreferrer"
+            >
+              ${hasAffiliateLink(product) ? 'Ver oferta no Mercado Livre' : 'Link indisponível'}
+            </a>
+            <a href="./index.html" class="btn btn-secondary">Voltar ao catálogo</a>
+          </div>
+
+          <div class="detail-notice">
+            <strong>Aviso:</strong> os preços, disponibilidade e condições do produto podem mudar ao longo do tempo e variam conforme o anunciante.
+          </div>
+        </div>
+      </div>
+
+      <section class="detail-section">
+        <div class="section-heading catalog-heading">
+          <div>
+            <span class="eyebrow eyebrow-light">Detalhes do produto</span>
+            <h2>Informações e especificações</h2>
+          </div>
+        </div>
+
+        <div class="spec-grid">
+          ${specs
+            .map(
+              (spec) => `
+                <div class="spec-item">
+                  <span>${spec.label}</span>
+                  <strong>${spec.value}</strong>
+                </div>
+              `
+            )
+            .join('')}
+        </div>
+      </section>
+
+      ${relatedProducts.length > 0 ? `
+        <section class="detail-section">
+          <div class="section-heading catalog-heading">
+            <div>
+              <span class="eyebrow eyebrow-light">Relacionados</span>
+              <h2>Produtos relacionados</h2>
+            </div>
+          </div>
+
+          <div class="product-grid product-grid-compact">
+            ${relatedProducts
+              .map(
+                (relatedProduct) => `
+                  <article class="product-card compact-card">
+                    <div class="product-media">
+                      <img src="${relatedProduct.image}" alt="${relatedProduct.name}" loading="lazy" />
+                    </div>
+                    <div class="product-body">
+                      <span class="category-tag">${relatedProduct.category}</span>
+                      <h3>${relatedProduct.name}</h3>
+                      <div class="price-row">
+                        <span class="actual-price">${formatPrice(relatedProduct.price)}</span>
+                        ${relatedProduct.oldPrice ? `<span class="old-price">${formatPrice(relatedProduct.oldPrice)}</span>` : ''}
+                      </div>
+                      <div class="card-actions">
+                        <a href="./product.html?id=${encodeURIComponent(relatedProduct.id)}" class="card-link">Ver produto</a>
+                      </div>
+                    </div>
+                  </article>
+                `
+              )
+              .join('')}
+          </div>
+        </section>
+      ` : ''}
+    </article>
+  `;
 }
 
 if (searchInput) {
@@ -317,8 +493,11 @@ if (productGridEl) {
 
 if (productModal) {
   productModal.addEventListener('click', (event) => {
-    const shouldClose = event.target.matches('[data-close="true"]') || event.target === productModal;
-    if (shouldClose) closeModal();
+    const backdropClick = event.target === productModal;
+    const closeButton = event.target.closest('.modal-close');
+    if (backdropClick || closeButton) {
+      closeModal();
+    }
   });
 }
 
@@ -332,11 +511,15 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-renderFeaturedProducts(products);
-renderAll();
+if (document.body.dataset.page === 'product') {
+  renderProductDetailPage();
+} else {
+  renderFeaturedProducts(products);
+  renderAll();
 
-if (searchInput) searchInput.value = '';
-if (minPriceInput) minPriceInput.value = '';
-if (maxPriceInput) maxPriceInput.value = '';
-if (sortSelect) sortSelect.value = 'featured';
-if (resultCount) resultCount.textContent = `${products.length} produtos`;
+  if (searchInput) searchInput.value = '';
+  if (minPriceInput) minPriceInput.value = '';
+  if (maxPriceInput) maxPriceInput.value = '';
+  if (sortSelect) sortSelect.value = 'featured';
+  if (resultCount) resultCount.textContent = `${products.length} produtos`;
+}
