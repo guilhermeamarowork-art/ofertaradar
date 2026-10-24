@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="OfertaRadar reúne ideias de produtos, ofertas e recomendações com foco em compras inteligentes no Brasil."
+    />
+    <title>OfertaRadar | As melhores ofertas, no seu radar.</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a href="#top" class="brand" aria-label="OfertaRadar home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img" aria-label="Logo OfertaRadar">
+              <defs>
+                <linearGradient id="brand-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffd84d"/>
+                  <stop offset="100%" stop-color="#ffb703"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="#0f172a"/>
+              <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5"/>
+              <circle cx="32" cy="32" r="8" fill="url(#brand-gradient)"/>
+              <path d="M20 42 L32 15 L44 42" fill="none" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 48 H48" stroke="#ffd84d" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>OfertaRadar</strong>
+            <small>As melhores ofertas, no seu radar.</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegação principal">
+          <a href="#destaques">Destaques</a>
+          <a href="#categorias">Categorias</a>
+          <a href="#ofertas">Ofertas</a>
+          <a href="#como-funciona">Como funciona</a>
+        </nav>
+
+        <div class="header-actions">
+          <label class="search-box" aria-label="Busca de produtos">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Buscar produto..." />
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Economize com inteligência</span>
+            <h1>Economize nas suas próximas compras.</h1>
+            <p>
+              Descubra produtos relevantes, compare categorias e encontre oportunidades
+              para comprar melhor com segurança e praticidade.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#ofertas">Explorar ofertas</a>
+              <a class="btn btn-secondary" href="#categorias">Ver categorias</a>
+            </div>
+            <ul class="hero-meta" aria-label="Benefícios do OfertaRadar">
+              <li>Produtos selecionados</li>
+              <li>Busca por categoria</li>
+              <li>Layout responsivo</li>
+            </ul>
+          </div>
+
+          <div class="hero-panel" aria-label="Resumo do site">
+            <div class="mini-card">
+              <span class="mini-label">Hoje</span>
+              <strong>+120</strong>
+              <small>itens em destaque</small>
+            </div>
+            <div class="mini-card highlight">
+              <span class="mini-label">Melhor valor</span>
+              <strong>até 40% OFF</strong>
+              <small>em categorias escolhidas</small>
+            </div>
+            <div class="mini-card small-panel">
+              <span class="mini-label">Categorias</span>
+              <div class="tags">
+                <span>Games</span>
+                <span>Casa</span>
+                <span>Tech</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="destaques" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Ofertas em destaque</span>
+              <h2>Produtos selecionados para você descobrir</h2>
+            </div>
+            <a class="link-as-button" href="#ofertas">Ver todos</a>
+          </div>
+
+          <div id="featuredProducts" class="product-grid"></div>
+        </div>
+      </section>
+
+      <section id="categorias" class="section section-muted">
+        <div class="container">
+          <div class="section-heading center">
+            <div>
+              <span class="eyebrow">Categorias</span>
+              <h2>Explore por interesse</h2>
+            </div>
+          </div>
+
+          <div id="categoryList" class="category-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="ofertas" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Catálogo</span>
+              <h2>Produtos mais procurados</h2>
+            </div>
+            <div class="results-meta">
+              <span id="resultCount">0 produtos</span>
+            </div>
+          </div>
+
+          <div id="productGrid" class="product-grid big-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="section section-muted">
+        <div class="container">
+          <div class="section-heading center">
+            <div>
+              <span class="eyebrow">Como funciona</span>
+              <h2>Um site pensado para facilitar a compra</h2>
+            </div>
+          </div>
+
+          <div class="benefits-grid">
+            <article class="benefit-card">
+              <div class="benefit-icon">01</div>
+              <h3>Busca simples</h3>
+              <p>Encontre itens por nome, categoria ou tendência sem complicação.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="benefit-icon">02</div>
+              <h3>Comparação visual</h3>
+              <p>Veja preço atual, preço antigo e desconto em um só olhar.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="benefit-icon">03</div>
+              <h3>Estratégia de afiliado</h3>
+              <p>Prepare os links de afiliado e transforme descobertas em oportunidades.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section disclaimer-section">
+        <div class="container">
+          <div class="disclaimer-box">
+            <h3>Aviso importante</h3>
+            <p>
+              Os produtos exibidos nesta página são exemplos demonstrativos. Para publicar
+              com links reais do Mercado Livre, substitua os dados dos produtos por links de
+              afiliado autorizados e mantenha o conteúdo sempre atualizado.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a href="#top" class="brand footer-brand">
+            <span class="brand-mark small" aria-hidden="true">
+              <svg viewBox="0 0 64 64" role="img" aria-label="Logo OfertaRadar mini">
+                <circle cx="32" cy="32" r="28" fill="#0f172a"/>
+                <circle cx="32" cy="32" r="18" fill="none" stroke="#f8fafc" stroke-width="3" stroke-dasharray="3 5"/>
+                <circle cx="32" cy="32" r="8" fill="#ffd84d"/>
+              </svg>
+            </span>
+            <span class="brand-copy">
+              <strong>OfertaRadar</strong>
+              <small>As melhores ofertas, no seu radar.</small>
+            </span>
+          </a>
+        </div>
+
+        <div>
+          <h4>Menu</h4>
+          <ul>
+            <li><a href="#destaques">Destaques</a></li>
+            <li><a href="#categorias">Categorias</a></li>
+            <li><a href="#ofertas">Ofertas</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Informações</h4>
+          <ul>
+            <li><a href="#como-funciona">Como funciona</a></li>
+            <li><a href="#">Política de afiliados</a></li>
+            <li><a href="#">Contato</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:contato@ofertaradar.com">contato@ofertaradar.com</a></li>
+            <li><span>Brasil</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="container">
+          <p>© 2026 OfertaRadar. Todos os direitos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
