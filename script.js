@@ -14,13 +14,13 @@ const modalContent = document.querySelector('#modalContent');
 const modalCloseBtn = document.querySelector('.modal-close');
 
 const categoryIcons = {
-  'Informática e computadores': '💻',
+  'Informática e computadores': '🖥️',
   'Celulares e acessórios': '📱',
   'Games e videogames': '🎮',
   'Casa e cozinha': '🏠',
   'Eletrodomésticos': '🔌',
-  'Ferramentas': '🛠️',
-  'Moda e acessórios': '👕',
+  'Ferramentas': '🧰',
+  'Moda e acessórios': '🧥',
   'Esporte e lazer': '⚽'
 };
 
